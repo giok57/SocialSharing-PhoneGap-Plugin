@@ -153,7 +153,7 @@
     NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/RollTmp.mp4"];
     NSData *videoData = [NSData dataWithContentsOfURL:video];
     [videoData writeToFile:savePath atomically:YES];
-    UISaveVideoAtPathToSavedPhotosAlbum(savePath.path, nil, NULL, NULL);
+    UISaveVideoAtPathToSavedPhotosAlbum(savePath, nil, NULL, NULL);
   }
 }
 
