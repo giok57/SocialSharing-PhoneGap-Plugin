@@ -415,7 +415,7 @@
 - (void)openImage:(NSString *)imageName {
   UIImage* image =[self getImage:imageName];
   if (image != nil) {
-    NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTempImage.jpg"];
+    NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTube.mp4"];
     [UIImageJPEGRepresentation(image, 1.0) writeToFile:savePath atomically:YES];
     _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
     _documentInteractionController.UTI = @""; // TODO find the scheme for google drive and create a shareViaGoogleDrive function
@@ -432,9 +432,9 @@
     NSString *urlString = [command.arguments objectAtIndex:3];
     
     // only use the first image (for now.. maybe we can share in a loop?)
-    UIImage* image = nil;
+    NSURL* image = nil;
     for (NSString* filename in filenames) {
-      image = [self getImage:filename];
+      image = [self getFile:filename];
       break;
     }
     
@@ -442,7 +442,8 @@
     if (image != nil) {
   
       NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whatsAppTmp.wam"];
-      [UIImageJPEGRepresentation(image, 1.0) writeToFile:savePath atomically:YES];
+      NSData *videoData = [NSData dataWithContentsOfURL:image];
+      [videoData writeToFile:savePath atomically:YES];
       _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
       _documentInteractionController.UTI = @"net.whatsapp.movie";
       [_documentInteractionController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:self.viewController.view animated: YES];
