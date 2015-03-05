@@ -140,7 +140,21 @@
 }
 
 - (void)shareViaFacebookWithPasteMessageHint:(CDVInvokedUrlCommand*)command {
-  [self shareViaInternal:command type:SLServiceTypeFacebook];
+  NSArray  *filenames = [command.arguments objectAtIndex:0];
+  
+  NSURL* video = nil;
+  for (NSString* filename in filenames) {
+    video = [self getFile:filename];
+    break;
+  }
+  
+  if (video != nil) {
+
+    NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/RollTmp.mp4"];
+    NSData *videoData = [NSData dataWithContentsOfURL:video];
+    [videoData writeToFile:savePath atomically:YES];
+    UISaveVideoAtPathToSavedPhotosAlbum(savePath.path, nil, NULL, NULL);
+  }
 }
 
 - (void)shareVia:(CDVInvokedUrlCommand*)command {
@@ -213,10 +227,9 @@
   }
   
   for (NSString* filename in filenames) {
-    NSUrl* image = [self getFile:filename];
+    UIImage* image = [self getImage:filename];
     if (image != nil) {
-      NSData *videoData = [NSData dataWithContentsOfURL:image];
-      [composeViewController addImage:videoData];
+      [composeViewController addImage:image];
     }
   }
   
