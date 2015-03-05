@@ -213,9 +213,10 @@
   }
   
   for (NSString* filename in filenames) {
-    UIImage* image = [self getImage:filename];
+    NSUrl* image = [self getFile:filename];
     if (image != nil) {
-      [composeViewController addImage:image];
+      NSData *videoData = [NSData dataWithContentsOfURL:image];
+      [composeViewController addImage:videoData];
     }
   }
   
