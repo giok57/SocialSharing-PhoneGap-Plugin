@@ -132,7 +132,51 @@
 }
 
 - (void)shareViaTwitter:(CDVInvokedUrlCommand*)command {
-  [self shareViaInternal:command type:SLServiceTypeTwitter];
+  NSString *vName = [command.arguments objectAtIndex:0];
+  //NSString *videoOutputPath=[_documentsDirectory stringByAppendingPathComponent:vName];
+  NSString *outputFilePath = [_documentsDirectory stringByAppendingPathComponent:@"finalVideo.mp4"];
+  if ([[NSFileManager defaultManager]fileExistsAtPath:outputFilePath])
+      [[NSFileManager defaultManager]removeItemAtPath:outputFilePath error:nil];
+  
+  
+  NSURL    *outputFileUrl = [NSURL fileURLWithPath:outputFilePath];
+  NSString *filePath = [_documentsDirectory stringByAppendingPathComponent:@"tempDub.wav"];
+  AVMutableComposition* mixComposition = [AVMutableComposition composition];
+  
+  NSURL    *audio_inputFileUrl = [NSURL fileURLWithPath:filePath];
+  NSURL    *video_inputFileUrl = [NSURL URLWithString:vName];
+  
+  CMTime nextClipStartTime = kCMTimeZero;
+  
+  AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:video_inputFileUrl options:nil];
+  CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAsset.duration);
+  
+  AVMutableCompositionTrack *a_compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+  [a_compositionVideoTrack insertTimeRange:video_timeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+  
+  AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:audio_inputFileUrl options:nil];
+  CMTimeRange audio_timeRange = CMTimeRangeMake(kCMTimeZero, audioAsset.duration);
+  AVMutableCompositionTrack *b_compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+  [b_compositionAudioTrack insertTimeRange:audio_timeRange ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+  
+  AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetMediumQuality];
+  _assetExport.outputFileType = @"com.apple.quicktime-movie";
+  _assetExport.outputURL = outputFileUrl;
+  
+  [_assetExport exportAsynchronouslyWithCompletionHandler:
+   ^(void ) {
+       if (_assetExport.status == AVAssetExportSessionStatusCompleted) {
+  
+        CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       }
+       else {
+          //Write Fail Code here   
+        CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+       }
+   }
+   ];
 }
 
 - (void)shareViaFacebook:(CDVInvokedUrlCommand*)command {
