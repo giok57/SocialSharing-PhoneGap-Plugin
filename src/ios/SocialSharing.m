@@ -6,6 +6,12 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+#import <AVFoundation/AVFoundation.h>
+#import <AVFoundation/AVBase.h>
+//#import <Foundation/Foundation.h>
+#import <CoreMedia/CMTime.h>
+#import <CoreMedia/CMTimeRange.h>
+
 @implementation SocialSharing {
   UIPopoverController *_popover;
   NSString *_popupCoordinates;
@@ -132,15 +138,21 @@
 }
 
 - (void)shareViaTwitter:(CDVInvokedUrlCommand*)command {
+
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString * _documentsDirectory = [paths objectAtIndex:0];
   NSString *vName = [command.arguments objectAtIndex:0];
   //NSString *videoOutputPath=[_documentsDirectory stringByAppendingPathComponent:vName];
+  NSString *filePath = [_documentsDirectory stringByAppendingPathComponent:@"tempDub.wav"];
   NSString *outputFilePath = [_documentsDirectory stringByAppendingPathComponent:@"finalVideo.mp4"];
+  
+  if ([[NSFileManager defaultManager]fileExistsAtPath:filePath])
+      [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
+    
   if ([[NSFileManager defaultManager]fileExistsAtPath:outputFilePath])
       [[NSFileManager defaultManager]removeItemAtPath:outputFilePath error:nil];
   
-  
   NSURL    *outputFileUrl = [NSURL fileURLWithPath:outputFilePath];
-  NSString *filePath = [_documentsDirectory stringByAppendingPathComponent:@"tempDub.wav"];
   AVMutableComposition* mixComposition = [AVMutableComposition composition];
   
   NSURL    *audio_inputFileUrl = [NSURL fileURLWithPath:filePath];
