@@ -141,16 +141,13 @@
   NSLog(@"DEBUG: init transform video.");
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *_documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-  NSLog(@"DEBUG: get documents dir Done.");
+  NSLog([@"DEBUG: get documents dir Done: " stringByAppendingString:_documentsDirectory]);
   NSString *vName = [command.arguments objectAtIndex:0];
   NSLog(@"DEBUG: get video name passed Done.");
   //NSString *videoOutputPath=[_documentsDirectory stringByAppendingPathComponent:vName];
   NSString *filePath = [_documentsDirectory stringByAppendingPathComponent:@"tempDub.wav"];
   NSString *outputFilePath = [_documentsDirectory stringByAppendingPathComponent:@"finalVideo.mp4"];
   
-  if ([[NSFileManager defaultManager]fileExistsAtPath:filePath])
-      [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
-    
   if ([[NSFileManager defaultManager]fileExistsAtPath:outputFilePath])
       [[NSFileManager defaultManager]removeItemAtPath:outputFilePath error:nil];
   
@@ -184,11 +181,18 @@
   
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:filePath])
+          [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
+    
        }
        else {
           //Write Fail Code here   
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        
+        if ([[NSFileManager defaultManager]fileExistsAtPath:filePath])
+          [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
        }
    }
    ];
