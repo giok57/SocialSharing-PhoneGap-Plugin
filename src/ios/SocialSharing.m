@@ -138,10 +138,13 @@
 }
 
 - (void)shareViaTwitter:(CDVInvokedUrlCommand*)command {
-
+  NSLog(@"DEBUG: init transform video.");
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *_documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+  NSLog(@"DEBUG: get documents dir Done.");
   NSString * _documentsDirectory = [paths objectAtIndex:0];
   NSString *vName = [command.arguments objectAtIndex:0];
+  NSLog(@"DEBUG: get video name passed Done.");
   //NSString *videoOutputPath=[_documentsDirectory stringByAppendingPathComponent:vName];
   NSString *filePath = [_documentsDirectory stringByAppendingPathComponent:@"tempDub.wav"];
   NSString *outputFilePath = [_documentsDirectory stringByAppendingPathComponent:@"finalVideo.mp4"];
@@ -165,11 +168,12 @@
   
   AVMutableCompositionTrack *a_compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
   [a_compositionVideoTrack insertTimeRange:video_timeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] atTime:nextClipStartTime error:nil];
-  
+  NSLog(@"DEBUG: get composition video track done");
   AVURLAsset* audioAsset = [[AVURLAsset alloc]initWithURL:audio_inputFileUrl options:nil];
   CMTimeRange audio_timeRange = CMTimeRangeMake(kCMTimeZero, audioAsset.duration);
   AVMutableCompositionTrack *b_compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
   [b_compositionAudioTrack insertTimeRange:audio_timeRange ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0] atTime:nextClipStartTime error:nil];
+  NSLog(@"DEBUG: get composition audio track done.");
   
   AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetMediumQuality];
   _assetExport.outputFileType = @"com.apple.quicktime-movie";
