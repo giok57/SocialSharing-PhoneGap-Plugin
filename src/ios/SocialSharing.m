@@ -254,7 +254,6 @@
   // isAvailableForServiceType returns true if you pass it a type that is not
   // in the defined constants, this is probably a bug on apples part
   if(!([type isEqualToString:SLServiceTypeFacebook]
-       || [type isEqualToString:SLServiceTypeTwitter]
        || [type isEqualToString:SLServiceTypeTencentWeibo]
        || [type isEqualToString:SLServiceTypeSinaWeibo])) {
     return false;
