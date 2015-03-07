@@ -142,7 +142,6 @@
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *_documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
   NSLog(@"DEBUG: get documents dir Done.");
-  NSString * _documentsDirectory = [paths objectAtIndex:0];
   NSString *vName = [command.arguments objectAtIndex:0];
   NSLog(@"DEBUG: get video name passed Done.");
   //NSString *videoOutputPath=[_documentsDirectory stringByAppendingPathComponent:vName];
