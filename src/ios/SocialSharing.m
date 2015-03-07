@@ -438,7 +438,6 @@
 }
 
 - (void)shareViaSMS:(CDVInvokedUrlCommand*)command {
-  if ([self canShareViaWhatsApp]) {
     NSString *message   = [command.arguments objectAtIndex:0];
     // subject is not supported by the SLComposeViewController
     NSArray  *filenames = [command.arguments objectAtIndex:2];
@@ -484,10 +483,7 @@
     CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     
-  } else {
-    CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-  }
+  
 }
 
 - (bool)canShareViaWhatsApp {
