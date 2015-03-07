@@ -174,11 +174,12 @@
   AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetMediumQuality];
   _assetExport.outputFileType = @"com.apple.quicktime-movie";
   _assetExport.outputURL = outputFileUrl;
+  NSLog(@"DEBUG: get composition audio track done.");
   
   [_assetExport exportAsynchronouslyWithCompletionHandler:
    ^(void ) {
        if (_assetExport.status == AVAssetExportSessionStatusCompleted) {
-  
+        NSLog(@"DEBUG: Video transformed DONE");
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         
@@ -187,7 +188,8 @@
     
        }
        else {
-          //Write Fail Code here   
+          //Write Fail Code here  
+        NSLog(@"DEBUG: Video transformed FAILED");
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         
