@@ -438,30 +438,43 @@
 }
 
 - (void)shareViaSMS:(CDVInvokedUrlCommand*)command {
-  NSString *message   = [command.arguments objectAtIndex:0];
-  // subject is not supported by the SLComposeViewController
-  NSArray  *filenames = [command.arguments objectAtIndex:2];
-  NSString *urlString = [command.arguments objectAtIndex:3];
-  
-  // only use the first image (for now.. maybe we can share in a loop?)
-  NSURL* image = nil;
-  for (NSString* filename in filenames) {
-    image = [self getFile:filename];
-    break;
+  if ([self canShareViaSMS]) {
+    NSDictionary* options = [command.arguments objectAtIndex:0];
+    NSString *phonenumbers = [command.arguments objectAtIndex:1];
+    NSString *message = [options objectForKey:@"message"];
+    NSString *subject = [options objectForKey:@"subject"];
+    NSString *image = [options objectForKey:@"image"];
+    
+    MFMessageComposeViewController *picker = [[MFMessageComposeViewController alloc] init];
+    picker.messageComposeDelegate = (id) self;
+    if (message != (id)[NSNull null]) {
+      picker.body = message;
+    }
+    if (subject != (id)[NSNull null]) {
+      [picker setSubject:subject];
+    }
+    if (image != nil && image != (id)[NSNull null]) {
+      BOOL canSendAttachments = [[MFMessageComposeViewController class] respondsToSelector:@selector(canSendAttachments)];
+      if (canSendAttachments) {
+        NSURL *file = [self getFile:image];
+        if (file != nil) {
+          [picker addAttachmentURL:file withAlternateFilename:nil];
+        }
+      }
+    }
+    
+    if (phonenumbers != (id)[NSNull null]) {
+      [picker setRecipients:[phonenumbers componentsSeparatedByString:@","]];
+    }
+    // remember the command, because we need it in the didFinishWithResult method
+    _command = command;
+    [self.commandDelegate runInBackground:^{
+      [self.viewController presentViewController:picker animated:YES completion:nil];
+    }];
+  } else {
+    CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
   }
-  
-  // with WhatsApp, we can share an image OR text+url.. image wins if set
-  if (image != nil) {
-
-    NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTubesmash.mp4"];
-    NSData *videoData = [NSData dataWithContentsOfURL:image];
-    [videoData writeToFile:savePath atomically:YES];
-    _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
-    _documentInteractionController.UTI = @"net.whatsapp.movie";
-    [_documentInteractionController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:self.viewController.view animated: YES];
-  }
-  CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (bool)canShareViaWhatsApp {
@@ -498,7 +511,7 @@
     // with WhatsApp, we can share an image OR text+url.. image wins if set
     if (image != nil) {
   
-      NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTubesmash.wam"];
+      NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTubesmash.mp4"];
       NSData *videoData = [NSData dataWithContentsOfURL:image];
       [videoData writeToFile:savePath atomically:YES];
       _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
