@@ -438,52 +438,30 @@
 }
 
 - (void)shareViaSMS:(CDVInvokedUrlCommand*)command {
-    NSString *message   = [command.arguments objectAtIndex:0];
-    // subject is not supported by the SLComposeViewController
-    NSArray  *filenames = [command.arguments objectAtIndex:2];
-    NSString *urlString = [command.arguments objectAtIndex:3];
-    
-    // only use the first image (for now.. maybe we can share in a loop?)
-    NSURL* image = nil;
-    for (NSString* filename in filenames) {
-      image = [self getFile:filename];
-      break;
-    }
-    
-    // with WhatsApp, we can share an image OR text+url.. image wins if set
-    if (image != nil) {
+  NSString *message   = [command.arguments objectAtIndex:0];
+  // subject is not supported by the SLComposeViewController
+  NSArray  *filenames = [command.arguments objectAtIndex:2];
+  NSString *urlString = [command.arguments objectAtIndex:3];
   
-      NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whatsAppTmp.mp4"];
-      NSData *videoData = [NSData dataWithContentsOfURL:image];
-      [videoData writeToFile:savePath atomically:YES];
-      _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
-      _documentInteractionController.UTI = @"net.whatsapp.movie";
-      [_documentInteractionController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:self.viewController.view animated: YES];
-    } else {
-      // append an url to a message, if both are passed
-      NSString * shareString = @"";
-      if (message != (id)[NSNull null]) {
-        shareString = message;
-      }
-      if (urlString != (id)[NSNull null]) {
-        if ([shareString isEqual: @""]) {
-          shareString = urlString;
-        } else {
-          shareString = [NSString stringWithFormat:@"%@ %@", shareString, urlString];
-        }
-      }
-      NSString * encodedShareString = [shareString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-      // also encode the '=' character
-      encodedShareString = [encodedShareString stringByReplacingOccurrencesOfString:@"=" withString:@"%3D"];
-      NSString * encodedShareStringForWhatsApp = [NSString stringWithFormat:@"whatsapp://send?text=%@", encodedShareString];
-      
-      NSURL *whatsappURL = [NSURL URLWithString:encodedShareStringForWhatsApp];
-      [[UIApplication sharedApplication] openURL: whatsappURL];
-    }
-    CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
+  // only use the first image (for now.. maybe we can share in a loop?)
+  NSURL* image = nil;
+  for (NSString* filename in filenames) {
+    image = [self getFile:filename];
+    break;
+  }
   
+  // with WhatsApp, we can share an image OR text+url.. image wins if set
+  if (image != nil) {
+
+    NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTubesmash.mp4"];
+    NSData *videoData = [NSData dataWithContentsOfURL:image];
+    [videoData writeToFile:savePath atomically:YES];
+    _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
+    _documentInteractionController.UTI = @"net.whatsapp.movie";
+    [_documentInteractionController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:self.viewController.view animated: YES];
+  }
+  CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (bool)canShareViaWhatsApp {
@@ -520,7 +498,7 @@
     // with WhatsApp, we can share an image OR text+url.. image wins if set
     if (image != nil) {
   
-      NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/whatsAppTmp.wam"];
+      NSString * savePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/myTubesmash.wam"];
       NSData *videoData = [NSData dataWithContentsOfURL:image];
       [videoData writeToFile:savePath atomically:YES];
       _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:savePath]];
