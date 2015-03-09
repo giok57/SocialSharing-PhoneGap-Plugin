@@ -172,7 +172,7 @@
   NSLog(@"DEBUG: get composition audio track done.");
   
   AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetMediumQuality];
-  _assetExport.outputFileType = @"com.apple.quicktime-movie";
+  _assetExport.outputFileType = @"public.mpeg-4";
   _assetExport.outputURL = outputFileUrl;
   NSLog(@"DEBUG: get composition audio track done.");
   
