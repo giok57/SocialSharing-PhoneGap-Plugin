@@ -179,9 +179,7 @@
   [_assetExport exportAsynchronouslyWithCompletionHandler:
    ^(void ) {
        if (_assetExport.status == AVAssetExportSessionStatusCompleted) {
-        if ([[NSFileManager defaultManager]fileExistsAtPath:filePath])
-          [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
-          
+         
         NSLog(@"DEBUG: Video transformed DONE");
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -189,9 +187,7 @@
        }
        else {
           //Write Fail Code here  
-        if ([[NSFileManager defaultManager]fileExistsAtPath:filePath])
-          [[NSFileManager defaultManager]removeItemAtPath:filePath error:nil];
-          
+        
         NSLog(@"DEBUG: Video transformed FAILED");
         CDVPluginResult * pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"not available"];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
