@@ -118,7 +118,7 @@ public class SocialSharing extends CordovaPlugin {
     try {
       Log.w("Tubesmash", "started mux");
       String videoPath = arg.substring(arg.lastIndexOf("/"), arg.length());
-      Movie video = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + videoPath);
+      Movie video = MovieCreator.build(arg);
       Log.w("Tubesmash", "getted video "+videoPath);
       Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
       Log.w("Tubesmash", "getted audio");
