@@ -118,13 +118,17 @@ public class SocialSharing extends CordovaPlugin {
     try {
       Log.w("Tubesmash", "started mux");
       String videoPath = arg.substring(7, arg.length());
-      Movie video = MovieCreator.build(videoPath);
+      H264TrackImpl videoTrack = new H264TrackImpl(new FileDataSourceImpl(videoPath));
+      //Movie video = MovieCreator.build(videoPath);
       //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       Log.w("Tubesmash", "getted video "+videoPath);
       Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
       Log.w("Tubesmash", "getted audio");
       Track audioTrack = audio.getTracks().get(0);
-      video.addTrack(audioTrack);
+      Movie movie = new Movie();
+      movie.addTrack(videoTrack);
+      movie.addTrack(audioTrack);
+      Container out = new DefaultMp4Builder().build(movie);
       Container out = new DefaultMp4Builder().build(video);
       FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
       out.writeContainer(fos.getChannel());
