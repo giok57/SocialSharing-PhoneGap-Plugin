@@ -130,7 +130,7 @@ public class SocialSharing extends CordovaPlugin {
       out.writeContainer(fos.getChannel());
       fos.close();
       //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-      callbackContext.error(e.getMessage());
+      callbackContext.error("OK");
       return false;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
