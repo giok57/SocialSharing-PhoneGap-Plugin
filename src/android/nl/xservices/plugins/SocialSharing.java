@@ -21,6 +21,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+import android.os.Environment;
+import com.coremedia.iso.boxes.Container;
+import com.googlecode.mp4parser.FileDataSourceImpl;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
+
+
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -68,7 +79,7 @@ public class SocialSharing extends CordovaPlugin {
     } else if (ACTION_SHARE_EVENT.equals(action)) {
       return doSendIntent(callbackContext, args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), null, false);
     } else if (ACTION_SHARE_VIA_TWITTER_EVENT.equals(action)) {
-      return doSendIntent(callbackContext, args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), "twitter", false);
+      return muxVideo(callbackContext, args.getString(0));
     } else if (ACTION_SHARE_VIA_FACEBOOK_EVENT.equals(action)) {
       return doSendIntent(callbackContext, args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), "com.facebook.katana", false);
     } else if (ACTION_SHARE_VIA_FACEBOOK_WITH_PASTEMESSAGEHINT.equals(action)) {
@@ -103,6 +114,27 @@ public class SocialSharing extends CordovaPlugin {
     return cordova.getActivity().getPackageManager().queryIntentActivities(intent, 0).size() > 1;
   }
 
+  private boolean muxVideo(CallbackContext callbackContext, String arg){
+    try {
+
+      String videoPath = arg.substring(arg.lastIndexOf("/"), arg.length());
+      Movie video = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + videoPath);
+      Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
+      Log.w("Tubesmash", "getted video and audio "+videoPath);
+      Track audioTrack = audio.getTracks().get(0);
+      video.addTrack(audioTrack);
+      Container out = new DefaultMp4Builder().build(video);
+      FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
+      out.writeContainer(fos.getChannel());
+      fos.close();
+      callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+      return true;
+    }catch (Exception e){
+      callbackContext.error("Unable to process video");
+      return false;
+    }
+  }
+  
   private boolean invokeEmailIntent(final CallbackContext callbackContext, final String message, final String subject, final JSONArray to, final JSONArray cc, final JSONArray bcc, final JSONArray files) throws JSONException {
 
     final SocialSharing plugin = this;
