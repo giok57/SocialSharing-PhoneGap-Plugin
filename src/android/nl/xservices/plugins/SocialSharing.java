@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.mp4parser.DataSource;
 import android.util.Log;
 import android.os.Environment;
 import com.coremedia.iso.boxes.Container;
@@ -118,20 +119,21 @@ public class SocialSharing extends CordovaPlugin {
     try {
       Log.w("Tubesmash", "started mux");
       //String videoPath = arg.substring(7, arg.length());
-      Mp4TrackImpl h264Track = new Mp4TrackImpl(new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
-      Movie video = new Movie();//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
-      //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-      Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
-      Log.w("Tubesmash", "getted audio");
-      Track audioTrack = audio.getTracks().get(0);
-      video.addTrack(audioTrack);
-      video.addTrack(h264Track);
-      Container out = new DefaultMp4Builder().build(video);
-      FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
-      out.writeContainer(fos.getChannel());
-      fos.close();
-      //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-      callbackContext.error("OK");
+      Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
+        //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+        Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
+        Log.w("Tubesmash", "getted audio");
+        Track audioTrack = audio.getTracks().get(0);
+        Track videoTrack = tube.getTracks().get(0);
+        Movie video = new Movie();
+        video.addTrack(audioTrack);
+        video.addTrack(videoTrack);
+        Container out = new DefaultMp4Builder().build(video);
+        FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
+        out.writeContainer(fos.getChannel());
+        fos.close();
+        //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+        callbackContext.error("OK");
       return false;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
