@@ -116,11 +116,12 @@ public class SocialSharing extends CordovaPlugin {
 
   private boolean muxVideo(CallbackContext callbackContext, String arg){
     try {
-
+      Log.w("Tubesmash", "started mux");
       String videoPath = arg.substring(arg.lastIndexOf("/"), arg.length());
       Movie video = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + videoPath);
+      Log.w("Tubesmash", "getted video "+videoPath);
       Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
-      Log.w("Tubesmash", "getted video and audio "+videoPath);
+      Log.w("Tubesmash", "getted audio");
       Track audioTrack = audio.getTracks().get(0);
       video.addTrack(audioTrack);
       Container out = new DefaultMp4Builder().build(video);
@@ -130,6 +131,7 @@ public class SocialSharing extends CordovaPlugin {
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       return true;
     }catch (Exception e){
+      Log.w("Tubesmash", e.getMessage());
       callbackContext.error("Unable to process video");
       return false;
     }
