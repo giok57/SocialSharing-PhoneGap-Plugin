@@ -132,7 +132,7 @@ public class SocialSharing extends CordovaPlugin {
       return true;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
-      callbackContext.error("Unable to process video");
+      callbackContext.error(e.getMessage());
       return false;
     }
   }
