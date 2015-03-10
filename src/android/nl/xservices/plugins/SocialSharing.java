@@ -118,7 +118,7 @@ public class SocialSharing extends CordovaPlugin {
     try {
       Log.w("Tubesmash", "started mux");
       //String videoPath = arg.substring(7, arg.length());
-      Movie video = MovieCreator.build(Uri.parse(arg).getPath());
+      Movie video = MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
       //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
       Log.w("Tubesmash", "getted audio");
@@ -136,6 +136,31 @@ public class SocialSharing extends CordovaPlugin {
       callbackContext.error(e.getMessage());
       return false;
     }
+  }
+  private Uri getFileUri(String dir, String image) throws IOException {
+    // we're assuming an image, but this can be any filetype you like
+    String localImage = image;
+    if (image.startsWith("http") || image.startsWith("www/")) {
+      String filename = getFileName(image);
+      localImage = "file://" + dir + "/" + filename;
+      if (image.startsWith("http")) {
+        // filename optimisation taken from https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin/pull/56
+        URLConnection connection = new URL(image).openConnection();
+        String disposition = connection.getHeaderField("Content-Disposition");
+        if (disposition != null) {
+          final Pattern dispositionPattern = Pattern.compile("filename=([^;]+)");
+          Matcher matcher = dispositionPattern.matcher(disposition);
+          if (matcher.find()) {
+            filename = matcher.group(1).replaceAll("[^a-zA-Z0-9._-]", "");
+            localImage = "file://" + dir + "/" + filename;
+          }
+        }
+        saveFile(getBytes(connection.getInputStream()), dir, filename);
+      } else {
+        saveFile(getBytes(webView.getContext().getAssets().open(image)), dir, filename);
+      }
+    }
+    return Uri.parse(localImage);
   }
   
   private boolean invokeEmailIntent(final CallbackContext callbackContext, final String message, final String subject, final JSONArray to, final JSONArray cc, final JSONArray bcc, final JSONArray files) throws JSONException {
