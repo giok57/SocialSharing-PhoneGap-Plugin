@@ -29,7 +29,7 @@ import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
-import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
+import com.googlecode.mp4parser.authoring.tracks.Mp4TrackImpl;
 
 
 import java.io.*;
@@ -118,7 +118,7 @@ public class SocialSharing extends CordovaPlugin {
     try {
       Log.w("Tubesmash", "started mux");
       //String videoPath = arg.substring(7, arg.length());
-      H264TrackImpl h264Track = new H264TrackImpl(new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
+      Mp4TrackImpl h264Track = new Mp4TrackImpl(new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
       Movie video = new Movie();//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
       //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
