@@ -124,6 +124,7 @@ public class SocialSharing extends CordovaPlugin {
       //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       //(DataSource)new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
       Movie video = MovieCreator.build((DataSource)new FileDataSourceImpl(getFileUri(getDownloadDir(), videoSrc).getPath()));
+      callbackContext.error("OK");
       Movie audio = MovieCreator.build(audioSrc.substring(7, audioSrc.length()));
       Track audioTrack = audio.getTracks().get(0);
       Track videoTrack = video.getTracks().get(0);
