@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
 import com.googlecode.mp4parser.DataSource;
 import android.util.Log;
 import android.os.Environment;
@@ -121,12 +122,12 @@ public class SocialSharing extends CordovaPlugin {
       //String videoPath = arg.substring(7, arg.length());
       //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
         //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-            Movie audio = MovieCreator.build(new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
+        H264TrackImpl audio = new H264TrackImpl(new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
         Log.w("Tubesmash", "getted audio");
-        Track audioTrack = audio.getTracks().get(0);
+        //Track audioTrack = audio.getTracks().get(0);
         //Track videoTrack = tube.getTracks().get(0);
         Movie video = new Movie();
-        video.addTrack(audioTrack);
+        video.addTrack(audio);
         //video.addTrack(videoTrack);
         Container out = new DefaultMp4Builder().build(video);
         FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
