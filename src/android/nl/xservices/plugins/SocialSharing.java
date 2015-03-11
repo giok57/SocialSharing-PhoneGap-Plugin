@@ -116,11 +116,14 @@ public class SocialSharing extends CordovaPlugin {
 
   private boolean muxVideo(CallbackContext callbackContext, String arg){
     try {
-      Log.w("Tubesmash", "started mux");
-      //String videoPath = arg.substring(7, arg.length());
-      //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
+      final SocialSharing plugin = this;
+      cordova.getThreadPool().execute(new SocialSharingRunnable(callbackContext) {
+      public void run() {
+        Log.w("Tubesmash", "started mux");
+        //String videoPath = arg.substring(7, arg.length());
+        //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
         //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-        Movie audio = MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
+        Movie audio = MovieCreator.build(plugin.getFileUri(plugin.getDownloadDir(), arg).getPath());
         Log.w("Tubesmash", "getted audio");
         Track audioTrack = audio.getTracks().get(0);
         //Track videoTrack = tube.getTracks().get(0);
@@ -133,7 +136,8 @@ public class SocialSharing extends CordovaPlugin {
         fos.close();
         //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
         callbackContext.error("OK");
-      return false;
+        return false;
+      }
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
       callbackContext.error(e.getMessage());
