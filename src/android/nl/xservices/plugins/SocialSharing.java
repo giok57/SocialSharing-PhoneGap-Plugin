@@ -80,7 +80,7 @@ public class SocialSharing extends CordovaPlugin {
     } else if (ACTION_SHARE_EVENT.equals(action)) {
       return doSendIntent(callbackContext, args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), null, false);
     } else if (ACTION_SHARE_VIA_TWITTER_EVENT.equals(action)) {
-      return muxVideo(callbackContext, args.getString(0));
+      return muxVideo(callbackContext, args.getString(0), args.getString(1));
     } else if (ACTION_SHARE_VIA_FACEBOOK_EVENT.equals(action)) {
       return doSendIntent(callbackContext, args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), "com.facebook.katana", false);
     } else if (ACTION_SHARE_VIA_FACEBOOK_WITH_PASTEMESSAGEHINT.equals(action)) {
@@ -115,26 +115,26 @@ public class SocialSharing extends CordovaPlugin {
     return cordova.getActivity().getPackageManager().queryIntentActivities(intent, 0).size() > 1;
   }
 
-  private boolean muxVideo(CallbackContext callbackContext, String arg){
+  private boolean muxVideo(CallbackContext callbackContext, String videoSrc, String audioSrc){
     try {
       
       Log.w("Tubesmash", "started mux");
       //String videoPath = arg.substring(7, arg.length());
       //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
-        //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-        Movie audio = MovieCreator.build((DataSource)new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
-        Log.w("Tubesmash", "getted audio");
-        //Track audioTrack = audio.getTracks().get(0);
-        //Track videoTrack = tube.getTracks().get(0);
-        //Movie video = new Movie();
-        //video.addTrack(audio);
-        //video.addTrack(videoTrack);
-        //Container out = new DefaultMp4Builder().build(video);
-        //FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
-        //out.writeContainer(fos.getChannel());
-        //fos.close();
-        //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-        callbackContext.error("OK");
+      //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+      //(DataSource)new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
+      Movie video = MovieCreator.build(videoSrc.substring(7, videoSrc.length()));
+      Movie audio = MovieCreator.build(audioSrc.substring(7, audioSrc.length()));
+      Track audioTrack = audio.getTracks().get(0);
+      Track videoTrack = video.getTracks().get(0);
+      Movie tube = new Movie();
+      tube.addTrack(audioTrack);
+      tube.addTrack(videoTrack);
+      Container out = new DefaultMp4Builder().build(tube);
+      FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
+      out.writeContainer(fos.getChannel());
+      fos.close();
+      callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       return false;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
