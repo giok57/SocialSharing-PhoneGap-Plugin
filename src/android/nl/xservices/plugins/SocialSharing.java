@@ -120,7 +120,7 @@ public class SocialSharing extends CordovaPlugin {
       //String videoPath = arg.substring(7, arg.length());
       //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
         //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-        Movie audio = MovieCreator.build(Environment.getDataDirectory().getAbsolutePath() + "/tempDub.amr");
+        Movie audio = MovieCreator.build(arg.substring(7, arg.length()));
         Log.w("Tubesmash", "getted audio");
         Track audioTrack = audio.getTracks().get(0);
         //Track videoTrack = tube.getTracks().get(0);
