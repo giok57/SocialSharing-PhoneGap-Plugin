@@ -114,35 +114,32 @@ public class SocialSharing extends CordovaPlugin {
     return cordova.getActivity().getPackageManager().queryIntentActivities(intent, 0).size() > 1;
   }
 
-  private boolean muxVideo(final CallbackContext callbackContext, final String arg){
-    final SocialSharing plugin = this;
-      cordova.getThreadPool().execute(new SocialSharingRunnable(callbackContext) {
-        public void run() {
-            try {
-          Log.w("Tubesmash", "started mux");
-          //String videoPath = arg.substring(7, arg.length());
-          //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
-          //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-          Movie audio = MovieCreator.build(plugin.getFileUri(plugin.getDownloadDir(), arg).getPath());
-          Log.w("Tubesmash", "getted audio");
-          Track audioTrack = audio.getTracks().get(0);
-          //Track videoTrack = tube.getTracks().get(0);
-          Movie video = new Movie();
-          video.addTrack(audioTrack);
-          //video.addTrack(videoTrack);
-          Container out = new DefaultMp4Builder().build(video);
-          FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
-          out.writeContainer(fos.getChannel());
-          fos.close();
-          //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
-          callbackContext.error("OK");
-        }catch (Exception e){
-              Log.w("Tubesmash", e.getMessage());
-              callbackContext.error(e.getMessage());
-          }
-        }
-      });
-    return true;
+  private boolean muxVideo(CallbackContext callbackContext, String arg){
+    try {
+      
+      Log.w("Tubesmash", "started mux");
+      //String videoPath = arg.substring(7, arg.length());
+      //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
+        //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+            Movie audio = MovieCreator.build(new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
+        Log.w("Tubesmash", "getted audio");
+        Track audioTrack = audio.getTracks().get(0);
+        //Track videoTrack = tube.getTracks().get(0);
+        Movie video = new Movie();
+        video.addTrack(audioTrack);
+        //video.addTrack(videoTrack);
+        Container out = new DefaultMp4Builder().build(video);
+        FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/finalVideo.mp4"), false);
+        out.writeContainer(fos.getChannel());
+        fos.close();
+        //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+        callbackContext.error("OK");
+      return false;
+    }catch (Exception e){
+      Log.w("Tubesmash", e.getMessage());
+      callbackContext.error(e.getMessage());
+      return false;
+    }
   }
   private Uri getFileUri(String dir, String image) throws IOException {
     // we're assuming an image, but this can be any filetype you like
