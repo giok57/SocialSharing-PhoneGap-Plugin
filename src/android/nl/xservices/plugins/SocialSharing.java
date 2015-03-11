@@ -115,10 +115,10 @@ public class SocialSharing extends CordovaPlugin {
   }
 
   private boolean muxVideo(CallbackContext callbackContext, String arg){
-    try {
-      final SocialSharing plugin = this;
+    final SocialSharing plugin = this;
       cordova.getThreadPool().execute(new SocialSharingRunnable(callbackContext) {
         public void run() {
+            try {
           Log.w("Tubesmash", "started mux");
           //String videoPath = arg.substring(7, arg.length());
           //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
@@ -136,14 +136,13 @@ public class SocialSharing extends CordovaPlugin {
           fos.close();
           //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
           callbackContext.error("OK");
-          return false;
+        }catch (Exception e){
+              Log.w("Tubesmash", e.getMessage());
+              callbackContext.error(e.getMessage());
+          }
         }
-      }
-    }catch (Exception e){
-      Log.w("Tubesmash", e.getMessage());
-      callbackContext.error(e.getMessage());
-      return false;
-    }
+      });
+    return true;
   }
   private Uri getFileUri(String dir, String image) throws IOException {
     // we're assuming an image, but this can be any filetype you like
