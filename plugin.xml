@@ -61,6 +61,7 @@
 
     <source-file src="src/android/nl/xservices/plugins/SocialSharing.java" target-dir="src/nl/xservices/plugins"/>
     <source-file src="src/android/libs/isoparser-1.0.5.4.jar" target-dir="libs" />
+    <source-file src="src/android/libs/aspectjrt-1.8.2.jar" target-dir="libs" />
   </platform>
 
   <!-- wp8 -->
