@@ -114,7 +114,7 @@ public class SocialSharing extends CordovaPlugin {
     return cordova.getActivity().getPackageManager().queryIntentActivities(intent, 0).size() > 1;
   }
 
-  private boolean muxVideo(CallbackContext callbackContext, String arg){
+  private boolean muxVideo(final CallbackContext callbackContext, final String arg){
     final SocialSharing plugin = this;
       cordova.getThreadPool().execute(new SocialSharingRunnable(callbackContext) {
         public void run() {
