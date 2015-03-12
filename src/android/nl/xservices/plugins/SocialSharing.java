@@ -132,7 +132,7 @@ public class SocialSharing extends CordovaPlugin {
       tube.addTrack(audioTrack);
       tube.addTrack(videoTrack);
       Container out = new DefaultMp4Builder().build(tube);
-      FileOutputStream fos = new FileOutputStream(new File("finalVideo.mp4"), false);
+      FileOutputStream fos = new FileOutputStream(new File(Environment.getDataDirectory()+"/finalVideo.mp4"), false);
       out.writeContainer(fos.getChannel());
       fos.close();
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
