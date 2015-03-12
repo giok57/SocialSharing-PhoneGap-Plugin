@@ -136,7 +136,7 @@ public class SocialSharing extends CordovaPlugin {
       FileOutputStream fos = new FileOutputStream(new File(outName), false);
       out.writeContainer(fos.getChannel());
       fos.close();
-      callbackContext.sendPluginResult(new PluginResult(outName));
+      callbackContext.success(outName);
       return false;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
