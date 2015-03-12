@@ -21,7 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.googlecode.mp4parser.authoring.tracks.AC3TrackImpl;
+import com.googlecode.mp4parser.authoring.tracks.AACTrackImpl;
 import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
 import com.googlecode.mp4parser.DataSource;
 import android.util.Log;
@@ -125,7 +125,7 @@ public class SocialSharing extends CordovaPlugin {
       //callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       //(DataSource)new FileDataSourceImpl(getFileUri(getDownloadDir(), arg).getPath()));
       Movie video = MovieCreator.build(videoSrc.substring(7, videoSrc.length()));
-      AC3TrackImpl aacTrack = new AC3TrackImpl(new FileDataSourceImpl(audioSrc.substring(7, audioSrc.length())));
+      AACTrackImpl aacTrack = new AACTrackImpl(new FileDataSourceImpl(audioSrc.substring(7, audioSrc.length())));
       //Track audioTrack = audio.getTracks().get(0);
       Track videoTrack = video.getTracks().get(0);
       Movie tube = new Movie();
