@@ -81,8 +81,8 @@ public class SocialSharing extends CordovaPlugin {
       return true;
     } else if (ACTION_SHARE_EVENT.equals(action)) {
       return doSendIntent(callbackContext, args.getString(0), args.getString(1), args.getJSONArray(2), args.getString(3), null, false);
-    } else if (ACTION_SAVE_EVENT.equals(action)) {
-      return saveVideo(callbackContext, args.getString(0));
+    } else if (ACTION_SAVE_EVENT.equals(args.getString(0))) {
+      return saveVideo(callbackContext, args.getString(1));
     } else if (ACTION_SHARE_VIA_TWITTER_EVENT.equals(action)) {
       return muxVideo(callbackContext, args.getString(0), args.getString(1));
     } else if (ACTION_SHARE_VIA_FACEBOOK_EVENT.equals(action)) {
