@@ -166,7 +166,7 @@ public class SocialSharing extends CordovaPlugin {
       mediaScanIntent.setData(uri);
       this.cordova.getActivity().sendBroadcast(mediaScanIntent);
 
-      callbackContext.success(videoSrc);
+      callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
       return true;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
