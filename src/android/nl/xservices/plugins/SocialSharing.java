@@ -162,11 +162,11 @@ public class SocialSharing extends CordovaPlugin {
   private boolean saveVideo(CallbackContext callbackContext, String videoSrc){
     try {
       Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-      Uri uri = Uri.parse(outName);
+      Uri uri = Uri.parse(videoSrc);
       mediaScanIntent.setData(uri);
       this.cordova.getActivity().sendBroadcast(mediaScanIntent);
 
-      callbackContext.success(outName);
+      callbackContext.success(videoSrc);
       return true;
     }catch (Exception e){
       Log.w("Tubesmash", e.getMessage());
