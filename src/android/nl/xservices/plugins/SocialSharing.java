@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.provider.MediaStore;
 import com.googlecode.mp4parser.authoring.tracks.AACTrackImpl;
 import com.googlecode.mp4parser.authoring.tracks.H264TrackImpl;
 import com.googlecode.mp4parser.DataSource;
@@ -37,12 +38,8 @@ import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+
 
 public class SocialSharing extends CordovaPlugin {
 
@@ -118,7 +115,7 @@ public class SocialSharing extends CordovaPlugin {
 
   private boolean muxVideo(CallbackContext callbackContext, String videoSrc, String audioSrc){
     try {
-      
+      Context context = this.cordova.getActivity().getApplicationContext();
       Log.w("Tubesmash", "started mux");
       //String videoPath = arg.substring(7, arg.length());
       //Movie tube = MovieCreator.build((DataSource) new FileInputStream(getFileUri(getDownloadDir(), arg).getPath()).getChannel());//MovieCreator.build(getFileUri(getDownloadDir(), arg).getPath());
@@ -136,6 +133,15 @@ public class SocialSharing extends CordovaPlugin {
       FileOutputStream fos = new FileOutputStream(new File(outName), false);
       out.writeContainer(fos.getChannel());
       fos.close();
+
+      ContentValues values = new ContentValues();
+
+      values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+      values.put(MediaStore.Images.Media.MIME_TYPE, "video/mp4");
+      values.put(MediaStore.MediaColumns.DATA, outName);
+
+      context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
       callbackContext.success(outName);
       return false;
     }catch (Exception e){
@@ -144,6 +150,20 @@ public class SocialSharing extends CordovaPlugin {
       return false;
     }
   }
+
+
+  private String getRandomName(){
+      char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+      StringBuilder sb = new StringBuilder();
+      Random random = new Random();
+      for (int i = 0; i < 20; i++) {
+          char c = chars[random.nextInt(chars.length)];
+          sb.append(c);
+      }
+      String output = sb.toString();
+      return output + ".mp4";
+  }
+
   private Uri getFileUri(String dir, String image) throws IOException {
     // we're assuming an image, but this can be any filetype you like
     String localImage = image;
