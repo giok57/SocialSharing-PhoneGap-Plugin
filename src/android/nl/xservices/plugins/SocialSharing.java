@@ -132,18 +132,15 @@ public class SocialSharing extends CordovaPlugin {
       tube.addTrack(audioTrack);
       tube.addTrack(videoTrack);
       Container out = new DefaultMp4Builder().build(tube);
-      String outName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)+"/finalVideo.mp4";
+      String outName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)+"/" + getRandomName();
       FileOutputStream fos = new FileOutputStream(new File(outName), false);
       out.writeContainer(fos.getChannel());
       fos.close();
 
-      ContentValues values = new ContentValues();
-
-      values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-      values.put(MediaStore.Images.Media.MIME_TYPE, "video/mp4");
-      values.put(MediaStore.MediaColumns.DATA, outName);
-
-      context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+      Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri uri = Uri.parse("file://"+outName);
+        mediaScanIntent.setData(uri);
+        this.cordova.getActivity().sendBroadcast(mediaScanIntent);
 
       callbackContext.success(outName);
       return false;
