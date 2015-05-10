@@ -125,7 +125,7 @@ public class SocialSharing extends CordovaPlugin {
       Log.w("Tubesmash", "started mux");
       
       Movie video = MovieCreator.build(videoSrc.substring(7, videoSrc.length()));
-      Movie audio = MovieCreator.build(audioSrc.substring(6));//("/storage/emulated/0/tempDub.amr");
+      Movie audio = MovieCreator.build(audioSrc);//("/storage/emulated/0/tempDub.amr");
       Track audioTrack = audio.getTracks().get(0);
       Track videoTrack = video.getTracks().get(0);
       Movie tube = new Movie();
