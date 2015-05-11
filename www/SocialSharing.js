@@ -35,7 +35,7 @@ SocialSharing.prototype.shareViaTwitter = function (message, file /* multiple no
   if (fileArray.length > 1) {
     ecb("shareViaTwitter supports max one file");
   } else {
-    cordova.exec(successCallback, ecb, "SocialSharing", "shareViaTwitter", [message, null, fileArray, url]);
+    cordova.exec(successCallback, ecb, "SocialSharing", "shareViaTwitter", [message, file, fileArray, url]);
   }
 };
 
